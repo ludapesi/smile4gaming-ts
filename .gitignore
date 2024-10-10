@@ -1,3 +1,10 @@
+
+# folders structure to keep
 db/mariaDB/**
+!db/mariaDB/.gitkeep
 sinusbot/data/**
+!sinusbot/data/.gitkeep
 sinusbot/scripts/**
+!sinusbot/scripts/.gitkeep
+logs/teamspeak/**
+!logs/teamspeak/.gitkeep
