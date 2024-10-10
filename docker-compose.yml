@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  teamspeak:
+    image: teamspeak
+    restart: unless-stopped
+    ports:
+      - 9987:9987/udp
+      #- 10011:10011
+# remove the above hash '#' if want access to ts query
+      - 30033:30033
+    environment:
+      TS3SERVER_DB_PLUGIN: ts3db_mariadb
+      TS3SERVER_DB_SQLCREATEPATH: create_mariadb
+      TS3SERVER_DB_HOST: db
+      TS3SERVER_DB_USER: tsuser
+# need to set the password for the database
+      TS3SERVER_DB_PASSWORD: set_the_password
+      TS3SERVER_DB_NAME: teamspeak
+      TS3SERVER_LICENSE: accept
+    depends_on:
+      - db
+
+  db:
+    image: mariadb
+    restart: unless-stopped
+    volumes:
+      - ./db/mariaDB:/var/lib/mysql
+    environment:
+      # MARIADB_ROOT_PASSWORD: set_the_password
+# can uncomment the above line and set your choosed password, or generated random and follow the bellow instructions
+      MARIADB_RANDOM_ROOT_PASSWORD: verdadeiro
+# after first time executed, search for the password doing read the log by running: (copy after $ )
+#$ docker logs smile4gaming-db-1
+
+# is not mandatory, but if need a light database manager, also run this container
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
+# If want the sinusbot need to run: (copy after $ )
+#$ docker build -f sinusbot/sinusbot.dockerfile -t ludapesi/sinusbot:latest .
+  sinusbot:
+    image: ludapesi/sinusbot:latest
+    restart: unless-stopped
+    ports:
+      - 8087:8087
+    volumes:
+      - ./sinusbot/scripts:/opt/sinusbot/scripts
+      - ./sinusbot/data:/opt/sinusbot/data
+    environment:
+      UID: 1080
+      GID: 1080
+    depends_on:
+      - teamspeak
+# after first time running the sinusbot need to seach for the admin password by reading the logs from: (copy after $)
+#$ docker logs smile4gaming-sinusbot-1
