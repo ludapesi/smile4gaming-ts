@@ -8,3 +8,5 @@ sinusbot/scripts/**
 !sinusbot/scripts/.gitkeep
 logs/teamspeak/**
 !logs/teamspeak/.gitkeep
+logs/mariaDB/**
+!logs/mariaDB/.gitkeep
